@@ -32,12 +32,37 @@ export default new Vuex.Store({
 
     personalList:[
       {
-        "prid": 4,    // 文件唯一标识id
-        "uid": 4,     // 所属用户标识id
-        "parent_id": 0,   // 上级目录id
-        "rid": 8,        // 文件资源标识
-        "isdir": 0,     // 是否是文件 dir:1; file:0
-        "src_name": "ddd"   // 资源名（带扩展名）
+        prid: 4,    // 文件唯一标识id
+        uid: 4,     // 所属用户标识id
+        parent_id: 0,   // 上级目录id
+        rid: 8,        // 文件资源标识
+        isdir: 0,     // 是否是文件 dir:1; file:0
+        src_name: "liuqi.word",   // 资源名（带扩展名）
+
+        //下列参数在获取后端的数据后，在前端生成，生成方法见 Private.vue组件 test1()函数
+        type: 'word',
+        checked: false,
+      },
+      {
+        prid: 3,    // 文件唯一标识id
+        uid: 3,     // 所属用户标识id
+        parent_id: 0,   // 上级目录id
+        rid: 6,        // 文件资源标识
+        isdir: 0,     // 是否是文件 dir:1; file:0
+        src_name: "666.php",   // 资源名（带扩展名）
+        type: 'php',
+        checked: false,
+      },
+      {
+        prid: 2,    // 文件唯一标识id
+        uid: 2,     // 所属用户标识id
+        parent_id: 0,   // 上级目录id
+        rid: 1,        // 文件资源标识
+        isdir: 1,     // 是否是文件 dir:1; file:0
+        src_name: "666",   // 资源名（带扩展名）
+
+        type: 'folder',
+        checked: false,
       }
         
     ],
