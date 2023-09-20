@@ -5,24 +5,46 @@ import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import Index from '../views/Index.vue'
 
+import Private from '../components/Private.vue'
+import Share from '../components/Share.vue'
+import Container from '../components/container.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
+    // redirect: '/index',
+    name: 'Index',
+    component: Index,
+    children:
+    [
+      {
+        path: "/Private",
+        name: "Private",
+        component: Private,
+      },
+      {
+        path: "/Share",
+        name: "Share",
+        component: Share,
+      },
+    ]
+    
+  },
+  {
+    path: '/container',
+    name: 'container',
+    component: Container,
+    
+  },
+  {
+    path: '/login',
     name: 'Login',
     component: Login
   },
-  {
-    path: '/index',
-    name: 'Index',
-    component: Index
-  },
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
+  
+  
   {
     path: '/about',
     name: 'About',

@@ -11,3 +11,8 @@ export function LoginIn(params) {
 export function SignIn(params) {
 	return axios.post("/register", params)
 }
+
+//请求当前目录的文件
+export function PersonalList(params) {
+	return axios.post("/personalList", params)
+}

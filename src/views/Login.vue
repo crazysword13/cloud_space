@@ -38,7 +38,8 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">登录</el-button>
+                  <!-- <el-button type="primary" @click="onSubmit">登录</el-button> -->
+                  <el-button type="primary" @click="testlogin">登录</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -97,6 +98,11 @@ export default {
     };
   },
   methods: {
+    //登录跳转测试（前端测试用）
+    testlogin(){
+      this.$router.push("/");
+    },
+
     //   点击登录的回调
     async onSubmit() {
       let res = await LoginIn({
@@ -121,7 +127,7 @@ export default {
 
         //   跳转至主界面
         console.log(111)
-        this.$router.push("/index");
+        this.$router.push("/");
       } else if (res.status == 200 && res.data.msg != 'ok') {
         this.$message.warning("登录失败,账号或密码错误!");
       }
