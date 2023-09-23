@@ -2,14 +2,14 @@
   <div class="head">
     <div class="logo">
       <a href="javascript:;">
-        <img src="../assets/logo.png">
+        <img src="../assets/logo.png" @click="test">
         <span>小邮盘</span>
       </a>
     </div>
     <div class="user">
       <Dropdown style="margin-left: 20px;" placement="bottom-end" @on-click="Actions">
         <a href="javascript:void(0)">
-          <span class="user-name">{{username}}</span>
+          <span class="user-name">{{user.email}}</span>
           <Icon type="ios-arrow-dropdown-circle" ></Icon>
         </a>
         <DropdownMenu slot="list" style="width: 250px;" >
@@ -22,7 +22,7 @@
             </DropdownItem>
             <DropdownItem class="list-item active" disabled>开启每日极速上传</DropdownItem>
             <DropdownItem class="list-item active" disabled>帮组与反馈</DropdownItem>
-            <DropdownItem class="list-item active" disabled>安全与隐私</DropdownItem>
+            <DropdownItem class="list-item active" disabled>修改密码</DropdownItem>
             <DropdownItem name='logout' class="list-item">退出登录</DropdownItem>
         </DropdownMenu>
       </Dropdown>
@@ -32,7 +32,7 @@
 
 <script>
 import { Dropdown, DropdownMenu, DropdownItem, Icon } from 'iview'
-
+// import { mapState } from 'vuex'
 export default {
   name: 'navBar',
   components: {
@@ -43,17 +43,58 @@ export default {
   },
   data() {
     return {
-      username: 'phr',
+      user: {
+        username: '',//无用
+        a_code: '',//无用
+        
+        uid: '',
+        root_id: '',
+        email: '',
+        password: '',
+        new_password: '',
+      },
     };
   },
+  computed: {
+    // ...mapState([
+    //   'email' (state)=> state.userInfo.email  //使用ES6的箭头函数来给count赋值
+    //   // 'userInfo'
+    // ])
+    
+  },
   methods: {
+    test(){
+      console.log(this.email)
+    },
+
     Actions(name) {
         if(name == 'logout')
         {
+            let user = {
+              username: '',//无用
+              a_code: '',//无用
+              
+              uid: '',
+              root_id: '',
+              email: '',
+              password: '',
+              new_password: '',
+            };
+
+            //将vuex的用户信息清空
+            this.$store.commit("SET_userInfo", user);
+
+            let token = '';
+            // 将token存入vuex
+            this.$store.commit("SET_Token", token);
+
             this.$router.push("/login");
         }
     },
   },
+  created:function(){
+    this.user = JSON.parse(this.$store.state.userInfo)
+  }
 }
 </script>
 

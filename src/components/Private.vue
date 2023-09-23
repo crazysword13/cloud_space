@@ -6,36 +6,32 @@
             <li v-for="item in FileList" :class="['list-item', {'checked': item.checked}]" :key="item.prid" >
                 <div class="list-item-content" >
                     <Checkbox size="large" class="checkbox" v-model="item.checked"></Checkbox>
-                    <div @click="changeChecked(item.prid)" @dblclick="into()">
+                    <!-- <div @click="changeChecked(item.prid)" @dblclick="into()">changeCurrentChecked -->
+                    <div @click="changeCurrentChecked(item.prid)" @dblclick="into(item.prid,item.type)">
                     <!-- <div @click="changeChecked(item.prid)" @dblclick="into(item.prid, item.type)"> -->
                         <img src="../assets/folder.png" class="big-image" v-if="item.type === 'folder'">
+
                         <img src="../assets/img/pdf.png" class="big-image" v-else-if="item.type === 'pdf'">
                         <img src="../assets/img/word.png" class="big-image" v-else-if="item.type === 'word'">
                         <img src="../assets/img/ppt.png" class="big-image" v-else-if="item.type === 'ppt'">
+
+                        <img src="../assets/img/jpg.jpg" class="big-image" v-else-if="item.type === 'jpg'">
+                        <img src="../assets/img/jpeg.png" class="big-image" v-else-if="item.type === 'jpeg'">
+                        <img src="../assets/img/png.png" class="big-image" v-else-if="item.type === 'png'">
+
                         <img src="../assets/zip.png" class="small-image" v-else-if="item.type === 'zip'">
-                        <img :src="item.src" class="auto-image" v-else-if="item.type === 'image'">
                         <img src="../assets/music.png" class="big-image" v-else-if="item.type === 'music'">
                         <img src="../assets/video.png" class="small-image" v-else-if="item.type === 'video'">
                         <img src="../assets/img/unknown.png" class="small-image" v-else>
                     </div>
                     <span class="folder-name">{{item.src_name}}</span>
-                    <!-- <span class="folder-name" v-if="!item.edit">{{item.src_name}}</span> -->
-                    <!-- <input
-                    @blur="editDoneBlur(item.prid)"
-                    @keydown.13="editDoneEnter"
-                    @keydown.esc="cancelEdit"
-                    type="text"
-                    ref="editInput"
-                    v-if="item.edit"
-                    class="folder-name-edit"
-                    v-model.trim="newName"
-                    > -->
+                    
                 </div>
             </li>
         </ul>
         
     </div>
-    <div class="kong" v-else @click="test">
+    <div class="kong" v-else @click="test3">
       <img src="../assets/暂无消息.png">
       <p>暂无内容哦～</p>
     </div>
@@ -47,7 +43,9 @@
 // import { Checkbox, Col, Message, Menu, Submenu, MenuItem, MenuGroup, Icon, Modal } from 'iview'
 import { Checkbox, } from 'iview'
 import toolBar from '@/components/toolBar.vue'
+import { SubPersonalList, ParentPersonalList } from "../network/request.js";
 export default {
+    // inject:['reload'],  //注入依赖
     name: 'Private',
     components: {
         Checkbox,
@@ -63,49 +61,63 @@ export default {
     },
     data () {
         return {
-            newName: '',
-            oldName: '',
-            cancelRename: false,
-            contextMenu1: false,
-            contextMenu2: false,
-            contextMenuLeft: '0px',
-            contextMenuTop: '0px',
-            modal3: false,
-            FileList:[
-                {
-                    prid: 4,    // 文件唯一标识id
-                    uid: 4,     // 所属用户标识id
-                    parent_id: 0,   // 上级目录id
-                    rid: 8,        // 文件资源标识
-                    isdir: 0,     // 是否是文件 dir:1; file:0
-                    src_name: "liuqi.word",   // 资源名（带扩展名）
-                    type: 'word',
-                    checked: false,
-                },
-                {
-                    prid: 3,    // 文件唯一标识id
-                    uid: 4,     // 所属用户标识id
-                    parent_id: 0,   // 上级目录id
-                    rid: 8,        // 文件资源标识
-                    isdir: 1,     // 是否是文件 dir:1; file:0
-                    src_name: "first",   // 资源名（带扩展名）
-                    type: 'folder',
-                    checked: false,
-                },
-                {
-                    prid: 1,    // 文件唯一标识id
-                    uid: 4,     // 所属用户标识id
-                    parent_id: 0,   // 上级目录id
-                    rid: 8,        // 文件资源标识
-                    isdir: 1,     // 是否是文件 dir:1; file:0
-                    src_name: "phr.ppt",   // 资源名（带扩展名）
-                    type: 'ppt',
-                    checked: false,
-                }
-            ],
+          userInfo:{
+            username: '',//无用
+            a_code: '',//无用
             
-            Islist: false,  //是否以列表形式展示文件
-        }
+            uid: '',
+            root_id: '',
+            email: '',
+            password: '',
+            new_password: '',
+          },
+
+          currentCheckdID: -1,//当前选中文件 or 文件夹的id
+          currentIsCheckd: false, // 当前是否有文件被选中
+
+          newName: '',
+          oldName: '',
+          cancelRename: false,
+          contextMenu1: false,
+          contextMenu2: false,
+          contextMenuLeft: '0px',
+          contextMenuTop: '0px',
+          modal3: false,
+          FileList:[
+              // {
+              //     prid: 4,    // 文件唯一标识id
+              //     uid: 4,     // 所属用户标识id
+              //     parent_id: 0,   // 上级目录id
+              //     rid: 8,        // 文件资源标识
+              //     isdir: 0,     // 是否是文件 dir:1; file:0
+              //     src_name: "liuqi.word",   // 资源名（带扩展名）
+              //     type: 'word',
+              //     checked: false,
+              // },
+              // {
+              //     prid: 3,    // 文件唯一标识id
+              //     uid: 4,     // 所属用户标识id
+              //     parent_id: 0,   // 上级目录id
+              //     rid: 8,        // 文件资源标识
+              //     isdir: 1,     // 是否是文件 dir:1; file:0
+              //     src_name: "first",   // 资源名（带扩展名）
+              //     type: 'folder',
+              //     checked: false,
+              // },
+              // {
+              //     prid: 1,    // 文件唯一标识id
+              //     uid: 4,     // 所属用户标识id
+              //     parent_id: 0,   // 上级目录id
+              //     rid: 8,        // 文件资源标识
+              //     isdir: 1,     // 是否是文件 dir:1; file:0
+              //     src_name: "phr.ppt",   // 资源名（带扩展名）
+              //     type: 'ppt',
+              //     checked: false,
+              // }
+          ],
+          
+          Islist: false,  //是否以列表形式展示文件
+      }
     },
     methods:{
 
@@ -131,7 +143,13 @@ export default {
             console.log(name.substring(name.lastIndexOf(".")+1))
         },
 
-        //改变Checked的值，切换选中状态
+        test3(){
+          let user = this.$store.state.userInfo
+          console.log(user)
+
+        },
+
+        //改变指定prid的文件的Checked的值，切换选中状态
         changeChecked(prid){
             this.FileList = this.FileList.map((item) => {
                 if (item.prid === prid) {
@@ -141,35 +159,147 @@ export default {
             })
         },
 
+        //改变当前选中的文件（or文件夹）的Checked的值
+        changeCurrentChecked(prid){
+          if(this.currentIsCheckd)
+          {
+            //如果当前已经有文件被选中
+            let id = this.currentCheckdID
+            if(prid == id){
+              this.currentIsCheckd = !this.currentIsCheckd
+              this.currentCheckdID = -1//设置为-1，表示无文件被选中
+              this.changeChecked(prid)
+            }
+            else{
+              this.changeChecked(id)
+              this.currentCheckdID = prid
+              this.changeChecked(prid)
+            }
+            
+          }
+          else{
+            //如果当前没有文件被选中
+            this.currentIsCheckd = !this.currentIsCheckd
+            this.currentCheckdID = prid
+            this.changeChecked(prid)
+          }
+        },
+
         //双击文件夹，加载文件夹内容
-        into(){
-            let arr = [
-                {
-                    prid: 4,    // 文件唯一标识id
-                    uid: 4,     // 所属用户标识id
-                    parent_id: 0,   // 上级目录id
-                    rid: 8,        // 文件资源标识
-                    isdir: 0,     // 是否是文件 dir:1; file:0
-                    src_name: "liuqi.pdf",   // 资源名（带扩展名）
-                    type: 'pdf',
-                    checked: false,
-                },
-                {
-                    prid: 3,    // 文件唯一标识id
-                    uid: 4,     // 所属用户标识id
-                    parent_id: 0,   // 上级目录id
-                    rid: 8,        // 文件资源标识
-                    isdir: 1,     // 是否是文件 dir:1; file:0
-                    src_name: "first.music",   // 资源名（带扩展名）
-                    type: 'music',
-                    checked: false,
-                }
-            ]
-            this.FileList = arr
+        async into(prid,type){
+          if(type == 'folder')
+          {
+            let res = await SubPersonalList({
+              uid: this.userInfo.uid,
+              // prid: user.root_id,//
+              prid: prid,
+            });
+            this.FileList = res.data.data
+            // console.log(this.FileList)
+
+            this.$store.commit("SET_CurrentListParent_id", prid);
+            this.$store.commit("SET_CurrentListId", prid);
+            this.$router.go(0)
+          }
+          else{
+            this.$message.warning("当前暂不支持查看文件!");
+          }
         }
 
     },
-    created:{
+    created:async function(){
+      let user = JSON.parse(this.$store.state.userInfo)
+      this.userInfo = user
+
+      let res
+      let IsBack = this.$store.state.IsBack
+      if(IsBack)
+      {
+        //如果处于回退状态
+        this.$store.commit("SET_IsBack", false);//恢复状态
+
+        let currentListId = this.$store.state.currentListId
+
+        // console.log(currentListParent_id)
+        if(currentListId != this.userInfo.root_id)//当前已经处于根目录下了，无效回退
+        {
+          res = await ParentPersonalList({
+            uid: user.uid,
+            // prid: user.root_id,//
+            parent_id: currentListId,
+          });
+          // this.$store.commit("SET_CurrentListId", this.$store.state.currentListParent_id);
+          // console
+        }
+        else{
+          this.$router.go(0)
+          // this.reload();
+        }
+        // if(currentListParent_id == this.userInfo.root_id)//当前已经处于根目录下了，无效回退
+        // {
+        //   this.this.$router.go(0)
+        // }
+        // else{
+        //   res = ParentPersonalList({
+        //     uid: user.uid,
+        //     // prid: user.root_id,//
+        //     parent_id: currentListParent_id,
+        //   });
+        // }
+      }else{
+        // console.log(111)
+        res = await SubPersonalList({
+          uid: user.uid,
+          // prid: user.root_id,//
+          prid: this.$store.state.currentListId,
+        });
+      }
+
+      let List = res.data.data;
+      this.$store.commit("SET_CurrentListId", List[0].parent_id);
+
+      // 使用 Array.map() 方法给每个对象添加一个属性 age 并赋值为 18
+      List = List.map(item => {
+        if(item.isdir)
+        {
+          //isdir等于1时，type为folder，文件夹
+          return { 
+              ...item,
+              //添加参数
+              type: 'folder',
+              // type: item.src_name.substring(item.src_name.lastIndexOf(".")+1),
+              checked: false,
+          }
+        }
+        else{
+          let leixing = item.src_name
+          if(leixing.indexOf(".") != -1)//找的到小数点，是有后缀的文件
+          {
+            return { 
+              ...item,
+              //添加参数
+              type: item.src_name.substring(item.src_name.lastIndexOf(".")+1),
+              checked: false,
+            }
+          }
+          else{
+            return { 
+              ...item,
+              //添加参数
+              type: 'unknown',
+              checked: false,
+            }
+          }
+          
+        }
+          
+      })
+      
+      this.FileList = List;
+
+      //将请求的文件放入Vuex存储
+      this.$store.commit("SET_PersonalList", JSON.stringify(res.data.data));
+
     }
   
 }

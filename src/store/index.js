@@ -2,33 +2,42 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-// import createPersistedState from "vuex-persistedstate"
+import createPersistedState from "vuex-persistedstate"
 
 export default new Vuex.Store({
-  // /* vuex数据持久化配置 */
-  // plugins: [
-  //   createPersistedState({
-  //     // 存储方式：localStorage、sessionStorage、cookies
-  //     storage: window.sessionStorage,
-  //     // 存储的 key 的key值
-  //     key: "store",
-  //     render(state) {
-  //       // 要存储的数据：本项目采用es6扩展运算符的方式存储了state中所有的数据
-  //       return {
-  //         ...state
-  //       };
-  //     }
-  //   })
-  // ],
+  /* vuex数据持久化配置 */
+  plugins: [
+    createPersistedState({
+      // 存储方式：localStorage、sessionStorage、cookies
+      storage: window.sessionStorage,
+      // 存储的 key 的key值
+      key: "store",
+      render(state) {
+        // 要存储的数据：本项目采用es6扩展运算符的方式存储了state中所有的数据
+        return {
+          ...state
+        };
+      }
+    })
+  ],
 
   state: {
-    userInfo:{
+    userInfo: {
+      username: '',//无用
+      a_code: '',//无用
+      
       uid: '',
-      username: '',
+      root_id: '',
+      email: '',
       password: '',
       new_password: '',
     },
     token: '',
+    IsLogin: false,
+
+    currentListId: 0, // 当前文件的id
+    currentListParent_id: -1,//当前文件夹的 parent_id
+    IsBack: false,//判断是否处于回退状态
 
     personalList:[
       {
@@ -82,6 +91,21 @@ export default new Vuex.Store({
     SET_PersonalList(state,data){
       state.personalList = data
     },
+
+    //修改当前文件夹 ID
+    SET_CurrentListId(state,data){
+      state.currentListId = data
+    },
+
+    //修改当前文件夹的 parent_id
+    SET_CurrentListParent_id(state,data){
+      state.currentListParent_id = data
+    },
+
+    //修改是否处于回退的状态 IsBack
+    SET_IsBack(state,data){
+      state.IsBack = data
+    }, 
   },
   actions: {
   },

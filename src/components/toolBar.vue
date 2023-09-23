@@ -10,8 +10,12 @@
       </li>
     </ul>
 
-    <Upload action="http://10.122.194.184:8082">
-        <Button type="primary" icon="ios-cloud-upload-outline">Upload files</Button>
+    <Upload 
+      action="http://10.122.194.184:8082/upload"
+      show-file-list: false
+      :on-success="uploadSuccess"
+      :data="submitData">
+        <Button type="primary" icon="ios-cloud-upload-outline">上传文件</Button>
     </Upload>
     
     <div class="btn-list">
@@ -35,7 +39,7 @@
           <Button class="btn-item" key="share" >分享</Button>
         </ButtonGroup>
       </div>
-      <Button style="border: none;border-radius: 2px;font-size: 16px;font-weight: bold;" type="info" icon="plus-round" size="large" @click="addNewFolder" >返回</Button>
+      <Button style="border: none;border-radius: 2px;font-size: 16px;font-weight: bold;" type="info" icon="plus-round" size="large" @click="goBack" >返回</Button>
       <Button style="background-color: #1296db;border: none;border-radius: 2px;font-size: 16px;font-weight: bold;" type="primary" icon="plus-round" size="large" @click="addNewFolder" >新建文件夹</Button>
     </div>
     <!-- <Modal
@@ -48,20 +52,25 @@
     </Modal> -->
     <Modal
       v-model="modal2"
-      title="移动文件/文件夹到"
+      title="新建文件夹"
       class-name="vertical-center-modal"
       @on-ok="okMove"
       @on-cancel="cancelMove">
-      <Tree :data="moveToData" style="color: #020202;" :render="renderContent"></Tree>
+      <el-input
+        v-model="newName"
+        placeholder="请输入新建文件夹名"
+      ></el-input>
     </Modal>
   </div>
 </template>
 
 <script>
-import {  Button, ButtonGroup, Modal, Tree , Icon} from 'iview'
+import {  Button, ButtonGroup, Modal,  Icon, Upload} from 'iview'
 // import Breadcrumb from './breadcrumb'
 // import { getChildrenById, canMoveData, getCheckedFileFromBuffer } from '../store/data'
 // import { mapState } from 'vuex'
+
+import { PersonalSave } from "../network/request.js";
 
 export default {
   name: 'toolbar',
@@ -72,13 +81,35 @@ export default {
     // Breadcrumb,
     Modal,
     // Message,
-    Tree,
     Icon,
+    Upload,
   },
   data () {
     return {
+      //上传文件时携带的时候参数
+      submitData:{
+        uid: 4,
+        rid: 8,
+        parent_id: 0,
+        isdir: 0,
+        src_name: "ddddd"
+
+      },
+      userInfo:{
+        username: '',//无用
+        a_code: '',//无用
+        
+        uid: '',
+        root_id: '',
+        email: '',
+        password: '',
+        new_password: '',
+      },
+
+
       active: false,
       newName: '',
+
       modal1: false,
       modal2: false,
       activeId: 0,
@@ -121,8 +152,58 @@ export default {
     
     
   },
+  created:function(){
+    this.userInfo = JSON.parse(this.$store.state.userInfo)
+  },
   methods: {
-    
+    addNewFolder(){
+      this.modal2 = !this.modal2
+    },
+    goBack(){
+
+      let currentListId = this.$store.state.currentListId
+      let user = JSON.parse(this.$store.state.userInfo)
+      if(currentListId != user.root_id)
+      {
+        //修改IsBack的状态
+        this.$store.commit("SET_IsBack", true);
+        this.$router.go(0)
+      }
+      else{
+        this.$message.warning("当前已经处于根目录");
+      }
+    },
+
+    async okMove(){
+      let List = await PersonalSave({
+        uid: this.userInfo.uid,
+        rid: 0,
+        parent_id: this.$store.state.currentListId,//将当前文件夹的id，作为上传文件的parent_id
+        isdir: 1,
+        src_name: this.newName,
+      });
+      console.log(List);
+      this.$router.go(0)
+    },
+
+    cancelMove(){
+      this.newName = ''
+    },
+
+
+    async uploadSuccess(response){
+      let res = response.data
+      // console.log(res)
+      let List = await PersonalSave({
+        uid: this.userInfo.uid,
+        rid: res.rid,
+        parent_id: this.$store.state.currentListId,//将当前文件夹的id，作为上传文件的parent_id
+        isdir: 0,
+        src_name: res.filename,
+      });
+      console.log(List);
+      this.$router.go(0)
+    }
   },
   mounted () {
     // eventBus.$on('moveFolderTo', () => {

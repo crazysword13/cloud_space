@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import vuexIndex from '@/store/index.js'
 
 // import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
@@ -59,6 +60,13 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.path != '/login' && !vuexIndex.state.token) {
+    router.replace('/login')
+  }
+  next()
 })
 
 export default router

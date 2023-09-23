@@ -1,10 +1,37 @@
 import axios from "axios"
 axios.defaults.baseURL = "http://10.122.194.184:8082"
 
+// import vuexIndex from '@/store/index.js'
 
-//登录接口
+
+
+// 配置拦截器
+// 请求拦截器
+// 添加请求拦截器
+// axios.interceptors.request.use(function (config) {
+// 		// 在发送请求之前做些什么
+// 		// 判断是否存在token,如果存在将每个页面header添加token
+// 		// let token = localStorage.getItem("token")
+// 		let token = vuexIndex.state.token
+// 		// let IsLogin = vuexIndex.state.IsLogin
+// 		console.log(token)
+// 		if (token) {
+// 			console.log(token)
+// 			config.headers.Authorization = token;
+// 		}
+// 		return config
+// 	}
+	
+// )
+
+//密码登录接口
 export function LoginIn(params) {
 	return axios.post("/login", params)
+}
+
+//邮箱登录接口
+export function LoginByEmail(params) {
+	return axios.post("/loginByEmail", params)
 }
 
 //注册接口
@@ -12,7 +39,28 @@ export function SignIn(params) {
 	return axios.post("/register", params)
 }
 
-//请求当前目录的文件
-export function PersonalList(params) {
-	return axios.post("/personalList", params)
+//请求当前文件的文件
+export function SubPersonalList(params) {
+	return axios.post("/subPersonalList", params)
+}
+
+
+//请求当前文件夹的上层结构，即回退
+export function ParentPersonalList(params) {
+	return axios.post("/parentPersonalList", params)
+}
+
+//发送邮箱，获取注册验证码
+export function RegEmail(params) {
+	return axios.post("/regEmail", params)
+}
+
+//发送邮箱，获取登录验证码
+export function LogEmail(params) {
+	return axios.post("/logEmail", params)
+}
+
+//上传资源之个人仓库
+export function PersonalSave(params) {
+	return axios.post("/personalSave", params)
 }
