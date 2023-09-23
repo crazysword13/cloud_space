@@ -9,7 +9,7 @@
       <div class='container'>
         <router-view></router-view>
       </div>
-      
+      <!-- <toolBar/> -->
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@
 import Head from '@/components/header'
 import SideBar from '@/components/sideBar' 
 // import Container  from '@/components/container'
+// import toolBar from '@/components/toolBar.vue'
 
 export default {
   name: 'Index',
@@ -25,6 +26,7 @@ export default {
     Head,
     SideBar,
     // Container,
+    // toolBar,
   },
   methods: {
     

@@ -1,5 +1,6 @@
 <template>
   <div class="Private">
+    <toolBar/>
     <div v-if="FileList.length">
         <ul id="thumbnail" v-if="!Islist">
             <li v-for="item in FileList" :class="['list-item', {'checked': item.checked}]" :key="item.prid" >
@@ -45,10 +46,12 @@
 <script>
 // import { Checkbox, Col, Message, Menu, Submenu, MenuItem, MenuGroup, Icon, Modal } from 'iview'
 import { Checkbox, } from 'iview'
+import toolBar from '@/components/toolBar.vue'
 export default {
     name: 'Private',
     components: {
         Checkbox,
+        toolBar,
         // Col,
         // Message,
         // Menu,
@@ -113,7 +116,7 @@ export default {
 
             // 使用 Array.map() 方法给每个对象添加一个属性 age 并赋值为 18
             arrY = arrY.map(item => {
-                return {
+                return { 
                     ...item,
                     //添加参数
                     type: item.src_name.substring(item.src_name.lastIndexOf(".")+1),
