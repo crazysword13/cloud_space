@@ -57,8 +57,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history', //此模式，部署到线上时，可能会出现一些（请求“错误”接口）的问题 
-  // mode: 'hash',
+  // mode: 'history', //此模式，部署到线上时，可能会出现一些（请求“错误”接口）的问题 
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes
 })
