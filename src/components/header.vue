@@ -2,7 +2,7 @@
   <div class="head">
     <div class="logo">
       <a href="javascript:;">
-        <img src="../assets/logo.png" @click="test">
+        <img src="../assets/img/logo.png" @click="test">
         <span>小邮盘</span>
       </a>
     </div>

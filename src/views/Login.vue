@@ -2,7 +2,7 @@
   <div class="login">
     <div class="main">
       <div class="logoContainer">
-        <div class="logo"><img src="../assets/logo.png" alt="" /></div>
+        <div class="logo"><img src="../assets/img/logo.png" alt="" /></div>
         <div class="name">小邮盘</div>
       </div>
       
