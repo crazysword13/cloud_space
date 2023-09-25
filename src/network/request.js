@@ -1,5 +1,6 @@
 import axios from "axios"
-axios.defaults.baseURL = "http://10.122.194.184:8082"
+// axios.defaults.baseURL = "http://10.122.194.184:8082"
+axios.defaults.baseURL = "http://localhost:8082"
 
 // import vuexIndex from '@/store/index.js'
 
@@ -63,4 +64,42 @@ export function LogEmail(params) {
 //上传资源之个人仓库
 export function PersonalSave(params) {
 	return axios.post("/personalSave", params)
+}
+
+
+// //上传资源至课程仓库courseSave
+// export function CourseSave(params) {
+// 	return axios.post("/courseSave", params)
+// }
+
+//上传资源至课程仓库courseSave
+//分享空间，新建文件夹
+export function CourseSave(params) {
+	return axios.post("/courseSave", params)
+}
+
+
+//删除私人仓库资源/personalDel
+export function PersonalDel(params) {
+	return axios.post("/personalDel", params)
+}
+
+//删除课程仓库资源 /courseDel
+export function CourseDel(params) {
+	return axios.post("/courseDel", params)
+}
+
+//下载资源/download
+export function Download(params) {
+	return axios.post("/download",{data: params}, {responseType: 'blob'})
+}
+
+//上级课程仓库列表 parentCourseList
+export function ParentCourseList(params) {
+	return axios.post("/parentCourseList",params)
+}
+
+//下级课程仓库列表 subCourseList
+export function SubCourseList(params) {
+	return axios.post("/subCourseList",params)
 }

@@ -34,10 +34,42 @@ export default new Vuex.Store({
     },
     token: '',
     IsLogin: false,
+    FileOprationId: -1,//操作的id
+    FileOprationCId: -1,//操作的Cid
+
+    IsFileOprationFolder: false,//操作文件是否为 folder
+    //当前正在操作的文件
+    FileOpration:{
+      prid: 0,    
+      uid: 0,     
+      parent_id: 0,   
+      rid: 0,        
+      isdir: 0,     
+      src_name: "",  
+      type: '',
+      checked: false,
+    },
 
     currentListId: 0, // 当前文件的id
+    currentListCId: 1, // 当前文件的id
+
     currentListParent_id: -1,//当前文件夹的 parent_id
+    currentListParent_cid: -1,//当前文件夹的 parent_id
+
     IsBack: false,//判断是否处于回退状态
+
+    PageName: '',//主页名
+
+    //个人文件页的面包屑列表
+    cunrrentFileList_private: ['全部'],
+    // [
+    //   //  '全部'
+    // ],
+    //分享空间页的面包屑列表
+    cunrrentFileList_share:[
+      // '全部'
+    ],
+
 
     personalList:[
       {
@@ -75,6 +107,9 @@ export default new Vuex.Store({
       }
         
     ],
+    ShareList:[
+
+    ]
   },
 
   // 设置属性状态，处理数据的唯一途径，state的改变或赋值只能在这里
@@ -92,9 +127,19 @@ export default new Vuex.Store({
       state.personalList = data
     },
 
+    //修改文件列表信息
+    SET_ShareList(state,data){
+      state.ShareList = data
+    },
+
     //修改当前文件夹 ID
     SET_CurrentListId(state,data){
       state.currentListId = data
+    },
+
+    //修改当前文件夹 ID
+    SET_CurrentListCId(state,data){
+      state.currentListCId = data
     },
 
     //修改当前文件夹的 parent_id
@@ -102,10 +147,51 @@ export default new Vuex.Store({
       state.currentListParent_id = data
     },
 
+    //修改当前文件夹的 parent_id
+    SET_CurrentListParent_cid(state,data){
+      state.currentListParent_cid = data
+    },
+
     //修改是否处于回退的状态 IsBack
     SET_IsBack(state,data){
       state.IsBack = data
     }, 
+
+    //修改个人文件组件，面包屑列表
+    SET_CunrrentFileList_share(state,data){
+      state.cunrrentFileList_share = data
+    }, 
+
+    //修改分享空间组件，面包屑列表
+    SET_CunrrentFileList_private(state,data){
+      state.cunrrentFileList_private = data
+    },
+
+    //修改主页名，PageName值
+    SET_PageName(state,data){
+      state.PageName = data
+    },
+
+    //修改FileOprationId值
+    SET_FileOprationId(state,data){
+      state.FileOprationId = data
+    },
+
+    //修改FileOprationCId值
+    SET_FileOprationCId(state,data){
+      state.FileOprationCId = data
+    },
+
+    //修改IsFileOprationFolder值
+    SET_IsFileOprationFolder(state,data){
+      state.IsFileOprationFolder = data
+    },
+ 
+    //修改FileOpration值
+    SET_FileOpration(state,data){
+      state.FileOpration = data
+    },
+    
   },
   actions: {
   },

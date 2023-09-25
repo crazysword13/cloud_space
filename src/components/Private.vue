@@ -7,7 +7,7 @@
                 <div class="list-item-content" >
                     <Checkbox size="large" class="checkbox" v-model="item.checked"></Checkbox>
                     <!-- <div @click="changeChecked(item.prid)" @dblclick="into()">changeCurrentChecked -->
-                    <div @click="changeCurrentChecked(item.prid)" @dblclick="into(item.prid,item.type)">
+                    <div @click="changeCurrentChecked(item.prid,item)" @dblclick="into(item.prid,item.type,item.src_name)">
                     <!-- <div @click="changeChecked(item.prid)" @dblclick="into(item.prid, item.type)"> -->
                         <img src="../assets/folder.png" class="big-image" v-if="item.type === 'folder'">
 
@@ -43,7 +43,7 @@
 // import { Checkbox, Col, Message, Menu, Submenu, MenuItem, MenuGroup, Icon, Modal } from 'iview'
 import { Checkbox, } from 'iview'
 import toolBar from '@/components/toolBar.vue'
-import { SubPersonalList, ParentPersonalList } from "../network/request.js";
+import { SubPersonalList, ParentPersonalList, } from "../network/request.js";
 export default {
     // inject:['reload'],  //注入依赖
     name: 'Private',
@@ -94,26 +94,6 @@ export default {
               //     type: 'word',
               //     checked: false,
               // },
-              // {
-              //     prid: 3,    // 文件唯一标识id
-              //     uid: 4,     // 所属用户标识id
-              //     parent_id: 0,   // 上级目录id
-              //     rid: 8,        // 文件资源标识
-              //     isdir: 1,     // 是否是文件 dir:1; file:0
-              //     src_name: "first",   // 资源名（带扩展名）
-              //     type: 'folder',
-              //     checked: false,
-              // },
-              // {
-              //     prid: 1,    // 文件唯一标识id
-              //     uid: 4,     // 所属用户标识id
-              //     parent_id: 0,   // 上级目录id
-              //     rid: 8,        // 文件资源标识
-              //     isdir: 1,     // 是否是文件 dir:1; file:0
-              //     src_name: "phr.ppt",   // 资源名（带扩展名）
-              //     type: 'ppt',
-              //     checked: false,
-              // }
           ],
           
           Islist: false,  //是否以列表形式展示文件
@@ -160,7 +140,18 @@ export default {
         },
 
         //改变当前选中的文件（or文件夹）的Checked的值
-        changeCurrentChecked(prid){
+        changeCurrentChecked(prid,item){
+          this.$store.commit("SET_FileOpration", JSON.stringify(item))
+          // console.log(this.$store.state.FileOpration)
+          // if(FileInit.type == 'folder')
+          // {
+          //   this.$store.commit("SET_IsFileOprationFolder", true)
+          //   console.log(this.$store.state.IsFileOprationFolder)
+          // }else{
+          //   this.$store.commit("SET_IsFileOprationFolder", false)
+          //   console.log("这是个文件")
+          // }
+
           if(this.currentIsCheckd)
           {
             //如果当前已经有文件被选中
@@ -169,11 +160,16 @@ export default {
               this.currentIsCheckd = !this.currentIsCheckd
               this.currentCheckdID = -1//设置为-1，表示无文件被选中
               this.changeChecked(prid)
+
+              //改变操作文件的 id
+              this.$store.commit("SET_FileOprationId", -1)//设置为-1，表示无文件被选中
             }
             else{
               this.changeChecked(id)
               this.currentCheckdID = prid
               this.changeChecked(prid)
+
+              this.$store.commit("SET_FileOprationId", prid)
             }
             
           }
@@ -182,11 +178,12 @@ export default {
             this.currentIsCheckd = !this.currentIsCheckd
             this.currentCheckdID = prid
             this.changeChecked(prid)
+            this.$store.commit("SET_FileOprationId", prid)
           }
         },
 
         //双击文件夹，加载文件夹内容
-        async into(prid,type){
+        async into(prid,type,src_name){
           if(type == 'folder')
           {
             let res = await SubPersonalList({
@@ -200,6 +197,10 @@ export default {
             this.$store.commit("SET_CurrentListParent_id", prid);
             this.$store.commit("SET_CurrentListId", prid);
             this.$router.go(0)
+
+            let ListInit = JSON.parse(this.$store.state.cunrrentFileList_private)
+            ListInit.push(src_name)
+            this.$store.commit("SET_CunrrentFileList_private", JSON.stringify(ListInit));
           }
           else{
             this.$message.warning("当前暂不支持查看文件!");
@@ -208,11 +209,21 @@ export default {
 
     },
     created:async function(){
+      this.$store.commit("SET_PageName", 'private');//修改主页名
+      this.$store.commit("SET_FileOprationId", -1)//设置为-1，表示无文件被选中
+
+      // let cunrrentFileList = JSON.prase(this.$store.state.cunrrentFileList_private)
+      // if(cunrrentFileList.length == 0){
+      //   cunrrentFileList.push('全部')
+      // }
+      // this.$store.commit("SET_CunrrentFileList_private", JSON.stringify(cunrrentFileList));
+
       let user = JSON.parse(this.$store.state.userInfo)
       this.userInfo = user
 
       let res
       let IsBack = this.$store.state.IsBack
+      //判断是否需要回退
       if(IsBack)
       {
         //如果处于回退状态
@@ -235,17 +246,6 @@ export default {
           this.$router.go(0)
           // this.reload();
         }
-        // if(currentListParent_id == this.userInfo.root_id)//当前已经处于根目录下了，无效回退
-        // {
-        //   this.this.$router.go(0)
-        // }
-        // else{
-        //   res = ParentPersonalList({
-        //     uid: user.uid,
-        //     // prid: user.root_id,//
-        //     parent_id: currentListParent_id,
-        //   });
-        // }
       }else{
         // console.log(111)
         res = await SubPersonalList({
@@ -256,7 +256,7 @@ export default {
       }
 
       let List = res.data.data;
-      this.$store.commit("SET_CurrentListId", List[0].parent_id);
+      this.$store.commit("SET_CurrentListId", List[0].parent_id);//将请求获取的文件列表的第一项的parent_id设置为当前文件夹的ID
 
       // 使用 Array.map() 方法给每个对象添加一个属性 age 并赋值为 18
       List = List.map(item => {

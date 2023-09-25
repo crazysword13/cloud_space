@@ -13,6 +13,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css'
 
 import './plugins/element.js'
+Vue.prototype.$axios = axios
 
 new Vue({
   router,

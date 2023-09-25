@@ -145,8 +145,8 @@ export default {
   data() {
     return {
       login: {
-        email: '',
-        password: '',
+        email: '1667654642@qq.com',
+        password: '123',
         a_code:'',
       },
       registered: {
@@ -194,6 +194,11 @@ export default {
         // 将token存入本地
         window.localStorage.setItem("token", res.data.data.token);
 
+        //初始化文件列表
+        let ListInit = ['全部']
+        this.$store.commit("SET_CunrrentFileList_private", JSON.stringify(ListInit));
+        this.$store.commit("SET_CunrrentFileList_share", JSON.stringify(ListInit));
+
         //   跳转至主界面
         console.log(111)
         this.$router.push("/");
@@ -226,6 +231,11 @@ export default {
         this.$store.commit("SET_Token", res.data.data.token);
         // 将token存入本地
         // window.localStorage.setItem("token", res.data.data.token);
+
+        //初始化文件列表
+        let ListInit = ['全部']
+        this.$store.commit("SET_CunrrentFileList_private", JSON.stringify(ListInit));
+        this.$store.commit("SET_CunrrentFileList_share", JSON.stringify(ListInit));
 
         //   跳转至主界面
         console.log(111)
