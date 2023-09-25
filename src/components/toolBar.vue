@@ -11,7 +11,7 @@
     </ul>
 
     <Upload 
-      action="http://localhost:8082/upload"
+      :action='uploadUrl'
       show-file-list: false
       :on-success="uploadSuccess">
         <Button type="primary" icon="ios-cloud-upload-outline">上传文件</Button>
@@ -75,7 +75,7 @@ import {  Button, ButtonGroup, Modal,  Icon, Upload} from 'iview'
 // import { getChildrenById, canMoveData, getCheckedFileFromBuffer } from '../store/data'
 // import { mapState } from 'vuex'
 
-import { PersonalSave, PersonalDel, CourseSave, CourseDel} from "../network/request.js";
+import { PersonalSave, PersonalDel, CourseSave, CourseDel, Download} from "../network/request.js";
 
 export default {
   name: 'toolbar',
@@ -92,6 +92,7 @@ export default {
   data () {
     return {
       PageName: this.$store.state.PageName,//主页名
+      uploadUrl: this.$axios.defaults.baseURL + '/upload',
 
       //上传文件时携带的时候参数
       submitData:{
@@ -183,14 +184,15 @@ export default {
           this.$message.warning("暂不支持下载文件夹")
         }else{
           this.$message.success("正在下载")
-          // Download({
-          //   rid: FileInit.rid,
-          // })
           
           //http://localhost:8082/download
-          this.$axios.post('http://10.122.194.184:8082/download', {
-            rid: FileInit.rid
-          },{responseType: 'blob' // 设置响应数据的格式
+          // this.$axios.post('http://10.122.194.184:8082/download', {
+          //   rid: FileInit.rid
+          // },{responseType: 'blob' // 设置响应数据的格式
+          // })
+          
+          Download({
+            rid: FileInit.rid,
           }).then(res => {
               console.log(res)
               const fileName = decodeURIComponent(
@@ -310,7 +312,6 @@ export default {
         console.log(List);
         this.$router.go(0)
       }else{
-        // http://127.0.0.1:8082/courseSave
         let List = await CourseSave({
           rid: 0,
           parent_id: this.$store.state.currentListCId,//将当前文件夹的id，作为上传文件的parent_id

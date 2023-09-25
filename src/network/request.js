@@ -1,5 +1,10 @@
 import axios from "axios"
 axios.defaults.baseURL = "http://10.122.194.184:8082"
+
+//toolBar.vue中还有 upload和 download这两处的url,需要改
+//已经不用改了，处理好了
+
+
 // axios.defaults.baseURL = "http://localhost:8082"
 
 // import vuexIndex from '@/store/index.js'
@@ -91,7 +96,7 @@ export function CourseDel(params) {
 
 //下载资源/download
 export function Download(params) {
-	return axios.post("/download",{data: params}, {responseType: 'blob'})
+	return axios.post("/download", params, {responseType: 'blob'})
 }
 
 //上级课程仓库列表 parentCourseList
