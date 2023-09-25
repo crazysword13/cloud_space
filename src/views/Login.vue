@@ -145,8 +145,8 @@ export default {
   data() {
     return {
       login: {
-        email: '1667654642@qq.com',
-        password: '123',
+        email: '',
+        password: '',
         a_code:'',
       },
       registered: {

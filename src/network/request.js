@@ -1,6 +1,6 @@
 import axios from "axios"
-// axios.defaults.baseURL = "http://10.122.194.184:8082"
-axios.defaults.baseURL = "http://localhost:8082"
+axios.defaults.baseURL = "http://10.122.194.184:8082"
+// axios.defaults.baseURL = "http://localhost:8082"
 
 // import vuexIndex from '@/store/index.js'
 

@@ -13,7 +13,14 @@
 
                         <img src="../assets/img/pdf.png" class="big-image" v-else-if="item.type === 'pdf'">
                         <img src="../assets/img/word.png" class="big-image" v-else-if="item.type === 'docx'">
+                        <img src="../assets/img/php.png" class="big-image" v-else-if="item.type === 'php'">
+                        <img src="../assets/img/python.png" class="big-image" v-else-if="item.type === 'py'">
+                        <img src="../assets/img/file.png" class="big-image" v-else-if="item.type === 'md'">
+                        <img src="../assets/img/txt.png" class="big-image" v-else-if="item.type === 'txt'">
+                        <img src="../assets/img/java.png" class="big-image" v-else-if="item.type === 'java' || item.type === 'cpp' || item.type === 'c' || item.type === 'go'">
+
                         <img src="../assets/img/ppt.png" class="big-image" v-else-if="item.type === 'ppt'">
+                        <img src="../assets/img/excel.png" class="big-image" v-else-if="item.type === 'xls' || item.type === 'xlsx'">
 
                         <img src="../assets/img/jpg.jpg" class="big-image" v-else-if="item.type === 'jpg'">
                         <img src="../assets/img/jpeg.png" class="big-image" v-else-if="item.type === 'jpeg'">

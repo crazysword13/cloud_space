@@ -187,8 +187,8 @@ export default {
           //   rid: FileInit.rid,
           // })
           
-          // http://10.122.194.184:8082/download
-          this.$axios.post('http://localhost:8082/download', {
+          //http://localhost:8082/download
+          this.$axios.post('http://10.122.194.184:8082/download', {
             rid: FileInit.rid
           },{responseType: 'blob' // 设置响应数据的格式
           }).then(res => {
